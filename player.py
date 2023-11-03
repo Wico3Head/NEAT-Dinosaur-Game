@@ -20,14 +20,14 @@ class Player(pygame.sprite.Sprite):
 
         self.image = self.walk[self.frame]
         self.rect = self.image.get_rect(bottomleft=(50, 325))
+        self.is_dead = False
 
-    def input_check(self):
-        keys = pygame.key.get_pressed()
-        if (keys[pygame.K_SPACE] or keys[pygame.K_UP]) and not keys[pygame.K_DOWN] and self.gravity > 16:
+    def input_check(self, decision):
+        if decision == 0 and self.gravity > 16:
             self.gravity = -13
             self.jump_sound.play()
             self.ducking = False
-        if (keys[pygame.K_DOWN]):
+        if decision == 1:
             if self.rect.bottom >= 325:
                 self.ducking = True
             else:
@@ -54,11 +54,6 @@ class Player(pygame.sprite.Sprite):
         else:
             self.image = self.jump 
 
-    def update(self, dead):
-        self.input_check()
+    def update(self, decision):
+        self.input_check(decision)
         self.animate()
-        if dead:
-            self.image = self.dead
-            self.dead_sound.play()
-            if self.ducking:
-                self.rect = self.image.get_rect(bottomleft=(50, 325))
